@@ -1,0 +1,50 @@
+/* Contenedor principal */
+.container {
+    @apply bg-white p-6 rounded-xl shadow-lg border border-gray-100;
+  }
+  
+  /* Título */
+  .title {
+    @apply text-2xl font-semibold mb-6 text-gray-800;
+  }
+  
+  /* Tabla */
+  .table {
+    @apply w-full text-sm;
+  }
+  
+  /* Cabecera de la tabla */
+  .tableHeader {
+    @apply bg-gray-50 border-b;
+  }
+  
+  /* Cabecera interactiva */
+  .tableHeaderCell {
+    @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition;
+  }
+  
+  /* Fila de la tabla */
+  .tableRow {
+    @apply border-b hover:bg-gray-50 transition duration-200 cursor-pointer;
+  }
+  
+  /* Celda de la tabla */
+  .tableCell {
+    @apply px-4 py-4 text-gray-600;
+  }
+  
+  /* Celda con estilo especial para nombre */
+  .tableCellName {
+    @apply font-semibold text-gray-900;
+  }
+  
+  /* Estilo para ganancias */
+  .gain {
+    @apply font-bold text-green-600;
+  }
+  
+  /* Estilo para pérdidas */
+  .loss {
+    @apply font-bold text-red-600;
+  }
+  
