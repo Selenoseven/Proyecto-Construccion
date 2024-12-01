@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { obtenerAcciones } from '../api';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import styles from '../Styles/AccionesRegistradas.module.css';
 
 const AccionesRegistradas = ({ accionesActualizadas, onSeleccionarAccion }) => {
   const [acciones, setAcciones] = useState([]);
+  const [ordenamiento, setOrdenamiento] = useState({ columna: null, ascendente: true });
 
   useEffect(() => {
     const fetchAcciones = async () => {
@@ -17,33 +20,67 @@ const AccionesRegistradas = ({ accionesActualizadas, onSeleccionarAccion }) => {
     fetchAcciones();
   }, [accionesActualizadas]);
 
+  const ordenarAcciones = (columna) => {
+    const esAscendente = ordenamiento.columna === columna ? !ordenamiento.ascendente : true;
+    const accionesOrdenadas = [...acciones].sort((a, b) => {
+      if (a[columna] < b[columna]) return esAscendente ? -1 : 1;
+      if (a[columna] > b[columna]) return esAscendente ? 1 : -1;
+      return 0;
+    });
+
+    setAcciones(accionesOrdenadas);
+    setOrdenamiento({ columna, ascendente: esAscendente });
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Acciones Registradas</h2>
-      <table className="min-w-full table-auto">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="px-4 py-2 text-left">Nombre</th>
-            <th className="px-4 py-2 text-right">Número de Acciones</th>
-            <th className="px-4 py-2 text-right">Valor Inicial</th>
-            <th className="px-4 py-2 text-right">Precio Actual</th>
-            <th className="px-4 py-2 text-right">Ganancia/Pérdida</th>
-          </tr>
-        </thead>
-        <tbody>
-          {acciones.map((accion) => (
-            <tr key={accion._id} className="border-b hover:bg-gray-50 cursor-pointer" onClick={() => onSeleccionarAccion(accion)}>
-              <td className="px-4 py-2 font-bold">{accion.nombre}</td>
-              <td className="px-4 py-2 text-right">{accion.numeroAcciones}</td>
-              <td className="px-4 py-2 text-right">${accion.valor.toFixed(2)}</td>
-              <td className="px-4 py-2 text-right">${accion.precioActual.toFixed(2)}</td>
-              <td className={`px-4 py-2 text-right ${accion.ganancia >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                ${accion.ganancia.toFixed(2)}
-              </td>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Cartera de Acciones</h2>
+      <div className="overflow-x-auto">
+        <table className={styles.table}>
+          <thead className={styles.tableHeader}>
+            <tr>
+              {[
+                { label: 'Nombre', key: 'nombre' },
+                { label: 'Núm. Acciones', key: 'numeroAcciones' },
+                { label: 'Valor Inicial', key: 'valor' },
+                { label: 'Precio Actual', key: 'precioActual' },
+                { label: 'Ganancia/Pérdida', key: 'ganancia' }
+              ].map(({ label, key }) => (
+                <th 
+                  key={key} 
+                  onClick={() => ordenarAcciones(key)}
+                  className={styles.tableHeaderCell}
+                >
+                  {label}
+                  {ordenamiento.columna === key && (
+                    <span className="ml-2">
+                      {ordenamiento.ascendente ? '▲' : '▼'}
+                    </span>
+                  )}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {acciones.map((accion) => (
+              <tr 
+                key={accion._id} 
+                className={styles.tableRow}
+                onClick={() => onSeleccionarAccion(accion)}
+              >
+                <td className={`${styles.tableCell} ${styles.tableCellName}`}>{accion.nombre}</td>
+                <td className={styles.tableCell}>{accion.numeroAcciones}</td>
+                <td className={styles.tableCell}>${accion.valor.toFixed(2)}</td>
+                <td className={styles.tableCell}>${accion.precioActual.toFixed(2)}</td>
+                <td className={`${styles.tableCell} ${accion.ganancia >= 0 ? styles.gain : styles.loss}`}>
+                  {accion.ganancia >= 0 ? <ArrowUpRight className="inline mr-1" size={16} /> : <ArrowDownRight className="inline mr-1" size={16} />}
+                  ${Math.abs(accion.ganancia).toFixed(2)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
