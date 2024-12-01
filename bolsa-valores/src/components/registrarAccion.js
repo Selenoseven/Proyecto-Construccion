@@ -1,52 +1,119 @@
-// RegistrarAccion.js
 import React, { useState } from 'react';
 import { registrarAccion } from '../api';
+import { Save, AlertTriangle } from 'lucide-react';
+import styles from '../Styles/RegistrarAccion.module.css';
 
 const RegistrarAccion = ({ onAccionRegistrada }) => {
   const [nombre, setNombre] = useState('');
   const [numeroAcciones, setNumeroAcciones] = useState('');
   const [valor, setValor] = useState('');
   const [fecha, setFecha] = useState('');
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
-    const accionData = { nombre, numeroAcciones: parseInt(numeroAcciones), valor: parseFloat(valor), fecha };
+    if (numeroAcciones <= 0) {
+      setError('El número de acciones debe ser mayor a 0');
+      return;
+    }
+
+    if (valor <= 0) {
+      setError('El valor inicial debe ser mayor a 0');
+      return;
+    }
+
+    const accionData = { 
+      nombre, 
+      numeroAcciones: parseInt(numeroAcciones), 
+      valor: parseFloat(valor), 
+      fecha 
+    };
     
     try {
       const accionRegistrada = await registrarAccion(accionData);
-      onAccionRegistrada(accionRegistrada); // Llamar la función para actualizar la lista de acciones
+      onAccionRegistrada(accionRegistrada);
       setNombre('');
       setNumeroAcciones('');
       setValor('');
       setFecha('');
     } catch (error) {
-      alert('Error al registrar la acción');
+      setError('Error al registrar la acción');
+      console.error(error);
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-4">
-      <h2 className="text-xl font-bold mb-4">Registrar Acción</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Símbolo:</label>
-          <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+    <div className={styles.container}>
+      <h2 className={styles.title}>Registrar Nueva Inversión</h2>
+      
+      {error && (
+        <div className={styles.error}>
+          <AlertTriangle className="mr-3 text-red-500" />
+          {error}
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Número de Acciones:</label>
-          <input type="number" value={numeroAcciones} onChange={(e) => setNumeroAcciones(e.target.value)} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+      )}
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className={styles.label}>Símbolo de Acción</label>
+          <input 
+            type="text" 
+            value={nombre} 
+            onChange={(e) => setNombre(e.target.value)} 
+            required 
+            placeholder="Ej. AAPL, GOOGL" 
+            className={styles.input}
+          />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Valor Inicial:</label>
-          <input type="number" value={valor} onChange={(e) => setValor(e.target.value)} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" step="0.01" />
+        
+        {/* Definimos grid directamente en el JSX */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={styles.label}>Número de Acciones</label>
+            <input 
+              type="number" 
+              value={numeroAcciones} 
+              onChange={(e) => setNumeroAcciones(e.target.value)} 
+              required 
+              min="1"
+              placeholder="Cantidad" 
+              className={styles.input}
+            />
+          </div>
+          
+          <div>
+            <label className={styles.label}>Valor Inicial</label>
+            <input 
+              type="number" 
+              value={valor} 
+              onChange={(e) => setValor(e.target.value)} 
+              required 
+              step="0.01" 
+              min="0"
+              placeholder="Precio" 
+              className={styles.input}
+            />
+          </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Fecha:</label>
-          <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+        
+        <div>
+          <label className={styles.label}>Fecha de Compra</label>
+          <input 
+            type="date" 
+            value={fecha} 
+            onChange={(e) => setFecha(e.target.value)} 
+            required 
+            className={styles.input}
+          />
         </div>
-        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          Registrar
+        
+        <button 
+          type="submit" 
+          className={styles.button}
+        >
+          <Save className="mr-2" /> Registrar Inversión
         </button>
       </form>
     </div>

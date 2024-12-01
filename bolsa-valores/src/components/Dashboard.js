@@ -1,57 +1,80 @@
 import React, { useState } from 'react';
-import { PlusCircle } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import RegistrarAccion from './registrarAccion';
 import AccionesRegistradas from './accionesRegistradas';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { obtenerHistoricoAccion } from '../api';
+import styles from '../Styles/Dashboard.module.css';
 
 const Dashboard = () => {
   const [accionesActualizadas, setAccionesActualizadas] = useState(false);
   const [accionSeleccionada, setAccionSeleccionada] = useState(null);
   const [historico, setHistorico] = useState([]);
+  const [cargando, setCargando] = useState(false);
 
   const actualizarAcciones = () => {
-    setAccionesActualizadas(!accionesActualizadas); // Para forzar la actualización de las acciones registradas
+    setAccionesActualizadas(!accionesActualizadas);
   };
 
   const handleSeleccionarAccion = async (accion) => {
-    setAccionSeleccionada(accion);
     try {
+      setCargando(true);
+      setAccionSeleccionada(accion);
       const historicoData = await obtenerHistoricoAccion(accion.nombre);
       setHistorico(historicoData);
     } catch (error) {
       console.error('Error al obtener el historial de la acción:', error.message);
+    } finally {
+      setCargando(false);
     }
   };
 
+  const renderHeader = () => (
+    <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
+      <h1 className={styles.title}>Panel de Inversiones</h1>
+      <div className="flex space-x-4">
+        <button onClick={actualizarAcciones} className={styles.button}>
+          <RefreshCw className="mr-2" size={18} /> Actualizar Cartera
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderHistorial = () => (
+    <div className={styles.card}>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className={styles.cardTitle}>
+          Historial de {accionSeleccionada.nombre}
+        </h2>
+        {cargando && <div className={styles.loading}>Cargando...</div>}
+      </div>
+      <ResponsiveContainer width="100%" height={350}>
+        <LineChart data={historico}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <XAxis dataKey="fecha" axisLine={{ stroke: '#e0e0e0' }} tickLine={{ stroke: '#e0e0e0' }} />
+          <YAxis axisLine={{ stroke: '#e0e0e0' }} tickLine={{ stroke: '#e0e0e0' }} />
+          <Tooltip contentStyle={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }} labelStyle={{ fontWeight: 'bold', color: '#111827' }} />
+          <Legend />
+          <Line type="monotone" dataKey="precio" stroke="#3b82f6" strokeWidth={3} activeDot={{ r: 8 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Dashboard de Acciones</h1>
-          <button
-            onClick={actualizarAcciones}
-            className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-          >
-            <PlusCircle className="mr-2" /> Actualizar Acciones
-          </button>
-        </div>
-        <RegistrarAccion onAccionRegistrada={actualizarAcciones} />
-        <AccionesRegistradas accionesActualizadas={accionesActualizadas} onSeleccionarAccion={handleSeleccionarAccion} />
-        {accionSeleccionada && (
-          <div className="mt-8 bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-4">{accionSeleccionada.nombre} ({accionSeleccionada.nombre}) - Historial</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={historico}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="fecha" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="precio" stroke="#8884d8" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
+    <div className={styles.container}>
+      <div className={styles.content}>
+        {renderHeader()}
+        <div className="grid grid-cols-2 gap-8">
+          {/* Ambas columnas ocupan un mayor espacio, ajustadas para pantallas grandes */}
+          <div className="col-span-2 lg:col-span-1">
+            <RegistrarAccion onAccionRegistrada={actualizarAcciones} />
           </div>
-        )}
+          <div className="col-span-2 lg:col-span-1">
+            <AccionesRegistradas accionesActualizadas={accionesActualizadas} onSeleccionarAccion={handleSeleccionarAccion} />
+          </div>
+        </div>
+        {accionSeleccionada && renderHistorial()}
       </div>
     </div>
   );
