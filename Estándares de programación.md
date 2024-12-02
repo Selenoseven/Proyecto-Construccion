@@ -29,12 +29,11 @@ Los estándares de programación adoptados en el proyecto aseguran un código li
 ### **Control de Versiones**
 - **Estructura de Ramas**:
   - `main`: Contiene la versión estable del código, lista para producción.
-  - `development`: Rama base para el desarrollo de nuevas funcionalidades.
-  - `feature/nombre-funcionalidad`: Para el desarrollo de una nueva característica.
-  - `bugfix/nombre-error`: Para solucionar errores específicos.
+  - `release`: Rama base para el desarrollo de nuevas funcionalidades.
+  - `Documentos`: Contiene los documentos necesarios para la implementación del proyecto.
 
 - **Mensajes de Commit Claros**:
-  - Formato estándar:
+  - Formato estándar: rama(funcionalidad-Backend-Frontend-Documento): acción a realizar.
 
 
 ---
