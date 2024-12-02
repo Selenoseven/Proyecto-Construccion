@@ -10,27 +10,12 @@ const registrarAccion = async (req, res) => {
     }
 
     try {
-        // Llamada a la API de Finnhub
-        const respuesta = await axios.get('https://finnhub.io/api/v1/quote', {
-            params: {
-                symbol: nombre,
-                token: process.env.FINNHUB_API_KEY,
-            },
-        });
-
-        const { c: precioActual } = respuesta.data;
-
-        // Calcular ganancia o pérdida
-        const ganancia = (precioActual - valor) * numeroAcciones;
-
-        // Crear y guardar la acción en MongoDB
+        // Crear y guardar la acción en MongoDB sin incluir el precio actual ni la ganancia
         const nuevaAccion = new Accion({
             nombre,
             numeroAcciones,
             valor,
             fecha,
-            precioActual,
-            ganancia,
         });
 
         // Guardar la acción en la base de datos
@@ -43,15 +28,40 @@ const registrarAccion = async (req, res) => {
     }
 };
 
+
 // Obtener todas las acciones registradas
 const obtenerAcciones = async (req, res) => {
     try {
         const acciones = await Accion.find();
-        res.json(acciones);
+        const accionesConPrecioActual = await Promise.all(
+            acciones.map(async (accion) => {
+                // Llamada a la API de Finnhub para obtener el precio actual
+                const respuesta = await axios.get('https://finnhub.io/api/v1/quote', {
+                    params: {
+                        symbol: accion.nombre,
+                        token: process.env.FINNHUB_API_KEY,
+                    },
+                });
+
+                const { c: precioActual } = respuesta.data;
+
+                // Recalcular la ganancia basada en el precio actual
+                const ganancia = (precioActual - accion.valor) * accion.numeroAcciones;
+
+                return {
+                    ...accion.toObject(),
+                    precioActual,
+                    ganancia,
+                };
+            })
+        );
+
+        res.json(accionesConPrecioActual);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las acciones' });
     }
 };
+
 
 
 module.exports = { registrarAccion, obtenerAcciones };
