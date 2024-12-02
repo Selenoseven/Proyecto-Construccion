@@ -60,30 +60,24 @@ Como usuario, quiero ver el cálculo detallado de ganancias o pérdidas para cad
 ### Tareas de implementación
 - Implementar una función para obtener los precios actuales de todas las acciones registradas utilizando la API de Finnhub. (6 horas)  
 - Diseñar el cálculo de ganancias/pérdidas basado en los datos obtenidos de la API. (4 horas)  
-- Mostrar los cálculos y explicaciones detalladas en la interfaz. (2 horas)  
+- Mostrar los cálculos y explicaciones detalladas en la interfaz. (2 horas)
 - Probar la funcionalidad con diferentes combinaciones de valores iniciales y precios actuales simulados desde la API. (1 hora)  
-
 ---
 
 ## Nro: HU-004
-**Título:** Exportar registros a Excel  
+**Título:** Visualizar historial de precios de una acción  
 **Prioridad:** Media  
-**Estimación:** 12 horas  
+**Estimación:** 8 horas  
 
 ### Historia de usuario
-Como usuario, quiero exportar la tabla de acciones registradas con sus datos (incluyendo ganancias/pérdidas) a un archivo Excel, para poder analizar mis inversiones fuera de la aplicación.
+Como usuario, quiero ver una gráfica del historial de precios de una acción específica, para analizar cómo ha evolucionado su valor a lo largo del tiempo y tomar decisiones de inversión más informadas.
 
 ### Criterios de aceptación
-1. **Funcionalidad de exportación:** Debe haber un botón "Exportar a Excel" que permita descargar los datos registrados en formato Excel.
-2. **Formato adecuado:** El archivo exportado debe incluir todas las columnas visibles (símbolo, número de acciones, valor inicial, precio actual, ganancias/pérdidas).
-3. **Manejo de errores:** Si ocurre un error durante la exportación, se debe mostrar un mensaje claro al usuario.
+1. **Datos desde la API**: La aplicación debe obtener los datos históricos de precios de la acción seleccionada mediante la API de Finnhub u otra API similar.
+2. **Gráfica interactiva**: La gráfica debe mostrar fechas en el eje X y precios en el eje Y, y permitir interacciones básicas como resaltar puntos específicos al pasar el mouse.
 
 ### Tareas de implementación
-- Crear una funcionalidad para exportar los datos a un archivo Excel. (5 horas)  
-- Configurar el formato y estructura del archivo exportado. (4 horas)  
-- Implementar manejo de errores durante la exportación. (2 horas)  
-- Probar la funcionalidad con diferentes cantidades de datos. (1 hora)  
-
----
-
-
+- Implementar una función para obtener los precios actuales de todas las acciones registradas utilizando la API de Finnhub. (6 horas)  
+- Diseñar el cálculo de ganancias/pérdidas basado en los datos obtenidos de la API. (4 horas)  
+- Mostrar los cálculos y explicaciones detalladas en la interfaz. (2 horas)
+- Probar la funcionalidad con diferentes combinaciones de valores iniciales y precios actuales simulados desde la API. (1 hora)  
