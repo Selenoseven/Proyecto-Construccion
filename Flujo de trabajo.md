@@ -56,9 +56,19 @@ Corregir cualquier problema o solicitud planteada durante la revisión.
 ## **Elementos Adicionales del Flujo de Trabajo**
 
 ### **Control de Versiones**
-- **Ramas principales**: `main`, `development`.
-- **Ramas de características**: `feature/nombre-funcionalidad`.
-- **Ramas de corrección de errores**: `bugfix/nombre-error`.
+- **Rama principal**: `main` (Default).
+  - **Descripción**: Es la rama principal y estable del proyecto, donde se integran todas las funcionalidades completadas y probadas.
+  - **Propósito**: Garantizar una base sólida del código que puede ser usada en producción.
+- **Rama secundaria**: `Documentos`.
+  - **Descripción**: Esta rama contiene documentación relacionada con el proyecto, como estándares de programación, arquitectura del sistema, flujo de trabajo. requisitos e historias de usuario y guías de instalación.
+  - **Propósito**: Centralizar toda la documentación esencial para el equipo, facilitando la colaboración.
+- **Rama release**: `release`.
+   - **Descripción**: Esta rama está enfocada en el desarrollo del backend y frontend del proyecto, con actualizaciones y ajustes relacionados con la API y la estructura del backend.
+   - **Propósito**: Servir como rama intermedia para consolidar y probar características del backend antes de fusionarlas con `main`.
+
+
+
+
 
 ---
 
