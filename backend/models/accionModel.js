@@ -6,6 +6,7 @@ const AccionSchema = new mongoose.Schema({
     valor: { type: Number, required: true },
     fecha: { type: Date, required: true },
     ganancia: { type: Number },
+    porcentaje: {type: Number},
 });
 
 

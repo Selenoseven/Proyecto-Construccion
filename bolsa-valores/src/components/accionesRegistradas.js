@@ -44,7 +44,8 @@ const AccionesRegistradas = ({ accionesActualizadas, onSeleccionarAccion }) => {
                 { label: 'Núm. Acciones', key: 'numeroAcciones' },
                 { label: 'Valor Inicial', key: 'valor' },
                 { label: 'Precio Actual', key: 'precioActual' },
-                { label: 'Ganancia/Pérdida', key: 'ganancia' }
+                { label: 'Ganancia/Pérdida', key: 'ganancia' },
+                { label: '% de Ganancia/Pérdida', key: 'porcentaje' }
               ].map(({ label, key }) => (
                 <th 
                   key={key} 
@@ -76,6 +77,11 @@ const AccionesRegistradas = ({ accionesActualizadas, onSeleccionarAccion }) => {
                   {accion.ganancia >= 0 ? <ArrowUpRight className="inline mr-1" size={16} /> : <ArrowDownRight className="inline mr-1" size={16} />}
                   ${Math.abs(accion.ganancia).toFixed(2)}
                 </td>
+                <td className={`${styles.tableCell} ${accion.porcentaje >= 0 ? styles.gain : styles.loss}`}>
+                  {accion.porcentaje >= 0 ? <ArrowUpRight className="inline mr-1" size={16} /> : <ArrowDownRight className="inline mr-1" size={16} />}
+                  {Math.abs(accion.porcentaje).toFixed(2)} %
+                </td>
+
               </tr>
             ))}
           </tbody>

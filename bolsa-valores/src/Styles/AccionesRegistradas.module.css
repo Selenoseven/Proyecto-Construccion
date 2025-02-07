@@ -1,6 +1,7 @@
 /* Contenedor principal */
 .container {
     @apply bg-white p-6 rounded-xl shadow-lg border border-gray-100;
+    width: 800px;
   }
   
   /* Título */
