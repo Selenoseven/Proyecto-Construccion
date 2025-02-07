@@ -45,14 +45,17 @@ const obtenerAcciones = async (req, res) => {
 
                 const { c: precioActual } = respuesta.data;
 
-                // Recalcular la ganancia basada en el precio actual
-                const ganancia = (precioActual - accion.valor) * accion.numeroAcciones;
-                const porcentaje = ganancia !== 0 ? (precioActual / ganancia) * 100 : 0;
+                // Calcular la ganancia y el porcentaje de ganancia
+                const valorInicial = accion.valor * accion.numeroAcciones;
+                const valorActual = precioActual * accion.numeroAcciones;
+                const ganancia = valorActual - valorInicial;
+                const porcentaje = (ganancia / valorInicial) * 100;
+
                 return {
                     ...accion.toObject(),
                     precioActual,
                     ganancia,
-                    porcentaje,
+                    porcentaje: porcentaje.toFixed(2), // Redondear a 2 decimales
                 };
             })
         );

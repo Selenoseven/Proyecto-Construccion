@@ -1,36 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { obtenerAcciones } from '../api';
+import React, { useState } from 'react';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import styles from '../Styles/AccionesRegistradas.module.css';
 
-const AccionesRegistradas = ({ accionesActualizadas, onSeleccionarAccion }) => {
-  const [acciones, setAcciones] = useState([]);
+const AccionesRegistradas = ({ acciones, accionesActualizadas, onSeleccionarAccion }) => {
   const [ordenamiento, setOrdenamiento] = useState({ columna: null, ascendente: true });
-
-  useEffect(() => {
-    const fetchAcciones = async () => {
-      try {
-        const data = await obtenerAcciones();
-        setAcciones(data);
-      } catch (error) {
-        console.error('Error al obtener las acciones:', error.message);
-      }
-    };
-
-    fetchAcciones();
-  }, [accionesActualizadas]);
+  const [accionesOrdenadas, setAccionesOrdenadas] = useState([]);
 
   const ordenarAcciones = (columna) => {
     const esAscendente = ordenamiento.columna === columna ? !ordenamiento.ascendente : true;
-    const accionesOrdenadas = [...acciones].sort((a, b) => {
-      if (a[columna] < b[columna]) return esAscendente ? -1 : 1;
-      if (a[columna] > b[columna]) return esAscendente ? 1 : -1;
+    const nuevasAccionesOrdenadas = [...acciones].sort((a, b) => {
+      const valorA = a[columna];
+      const valorB = b[columna];
+      
+      if (typeof valorA === 'number' && typeof valorB === 'number') {
+        return esAscendente ? valorA - valorB : valorB - valorA;
+      }
+      
+      if (valorA < valorB) return esAscendente ? -1 : 1;
+      if (valorA > valorB) return esAscendente ? 1 : -1;
       return 0;
     });
 
-    setAcciones(accionesOrdenadas);
+    setAccionesOrdenadas(nuevasAccionesOrdenadas);
     setOrdenamiento({ columna, ascendente: esAscendente });
   };
+
+  const accionesMostradas = accionesOrdenadas.length > 0 ? accionesOrdenadas : acciones;
 
   return (
     <div className={styles.container}>
@@ -63,25 +58,38 @@ const AccionesRegistradas = ({ accionesActualizadas, onSeleccionarAccion }) => {
             </tr>
           </thead>
           <tbody>
-            {acciones.map((accion) => (
+            {accionesMostradas.map((accion) => (
               <tr 
                 key={accion._id} 
                 className={styles.tableRow}
                 onClick={() => onSeleccionarAccion(accion)}
               >
-                <td className={`${styles.tableCell} ${styles.tableCellName}`}>{accion.nombre}</td>
-                <td className={styles.tableCell}>{accion.numeroAcciones}</td>
-                <td className={styles.tableCell}>${accion.valor.toFixed(2)}</td>
-                <td className={styles.tableCell}>${accion.precioActual.toFixed(2)}</td>
+                <td className={`${styles.tableCell} ${styles.tableCellName}`}>
+                  {accion.nombre}
+                </td>
+                <td className={styles.tableCell}>
+                  {accion.numeroAcciones}
+                </td>
+                <td className={styles.tableCell}>
+                  ${accion.valor.toFixed(2)}
+                </td>
+                <td className={styles.tableCell}>
+                  ${accion.precioActual.toFixed(2)}
+                </td>
                 <td className={`${styles.tableCell} ${accion.ganancia >= 0 ? styles.gain : styles.loss}`}>
-                  {accion.ganancia >= 0 ? <ArrowUpRight className="inline mr-1" size={16} /> : <ArrowDownRight className="inline mr-1" size={16} />}
+                  {accion.ganancia >= 0 ? 
+                    <ArrowUpRight className="inline mr-1" size={16} /> : 
+                    <ArrowDownRight className="inline mr-1" size={16} />
+                  }
                   ${Math.abs(accion.ganancia).toFixed(2)}
                 </td>
                 <td className={`${styles.tableCell} ${accion.porcentaje >= 0 ? styles.gain : styles.loss}`}>
-                  {accion.porcentaje >= 0 ? <ArrowUpRight className="inline mr-1" size={16} /> : <ArrowDownRight className="inline mr-1" size={16} />}
-                  {Math.abs(accion.porcentaje).toFixed(2)} %
+                  {accion.porcentaje >= 0 ? 
+                    <ArrowUpRight className="inline mr-1" size={16} /> : 
+                    <ArrowDownRight className="inline mr-1" size={16} />
+                  }
+                  {Math.abs(accion.porcentaje).toFixed(2)}%
                 </td>
-
               </tr>
             ))}
           </tbody>

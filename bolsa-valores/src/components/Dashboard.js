@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import RegistrarAccion from './registrarAccion';
 import AccionesRegistradas from './accionesRegistradas';
+import ConsolidationTable from './ConsolidationTable';
+import ConsolidationTable2 from './ConsolidationTable2'; // Importar el nuevo componente
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { obtenerHistoricoAccion } from '../api';
+import { obtenerHistoricoAccion, obtenerAcciones } from '../api';
 import styles from '../Styles/Dashboard.module.css';
 
 const Dashboard = () => {
@@ -11,6 +13,21 @@ const Dashboard = () => {
   const [accionSeleccionada, setAccionSeleccionada] = useState(null);
   const [historico, setHistorico] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [acciones, setAcciones] = useState([]);
+  const [preciosActuales, setPreciosActuales] = useState({}); // Precios actuales para ConsolidationTable2
+
+  useEffect(() => {
+    const fetchAcciones = async () => {
+      try {
+        const data = await obtenerAcciones();
+        setAcciones(data);
+      } catch (error) {
+        console.error('Error al obtener las acciones:', error.message);
+      }
+    };
+
+    fetchAcciones();
+  }, [accionesActualizadas]);
 
   const actualizarAcciones = () => {
     setAccionesActualizadas(!accionesActualizadas);
@@ -66,14 +83,23 @@ const Dashboard = () => {
       <div className={styles.content}>
         {renderHeader()}
         <div className="grid grid-cols-2 gap-8">
-          {/* Ambas columnas ocupan un mayor espacio, ajustadas para pantallas grandes */}
           <div className="col-span-2 lg:col-span-1">
             <RegistrarAccion onAccionRegistrada={actualizarAcciones} />
           </div>
           <div className="col-span-2 lg:col-span-1">
-            <AccionesRegistradas accionesActualizadas={accionesActualizadas} onSeleccionarAccion={handleSeleccionarAccion} />
+            <AccionesRegistradas 
+              acciones={acciones}
+              accionesActualizadas={accionesActualizadas} 
+              onSeleccionarAccion={handleSeleccionarAccion} 
+            />
           </div>
         </div>
+        {acciones.length > 0 && <ConsolidationTable acciones={acciones} />}
+        {acciones.length > 0 && (
+          <div className="mt-8">
+            <ConsolidationTable2 acciones={acciones} preciosActuales={preciosActuales} />
+          </div>
+        )}
         {accionSeleccionada && renderHistorial()}
       </div>
     </div>

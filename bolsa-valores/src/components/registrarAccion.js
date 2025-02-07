@@ -24,13 +24,13 @@ const RegistrarAccion = ({ onAccionRegistrada }) => {
       return;
     }
 
-    const accionData = { 
-      nombre, 
-      numeroAcciones: parseInt(numeroAcciones), 
-      valor: parseFloat(valor), 
-      fecha 
+    const accionData = {
+      nombre,
+      numeroAcciones: parseInt(numeroAcciones),
+      valor: parseFloat(valor),
+      fecha
     };
-    
+
     try {
       const accionRegistrada = await registrarAccion(accionData);
       onAccionRegistrada(accionRegistrada);
@@ -47,70 +47,72 @@ const RegistrarAccion = ({ onAccionRegistrada }) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Registrar Nueva Inversión</h2>
-      
+
       {error && (
         <div className={styles.error}>
           <AlertTriangle className="mr-3 text-red-500" />
           {error}
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className={styles.label}>Símbolo de Acción</label>
-          <input 
-            type="text" 
-            value={nombre} 
-            onChange={(e) => setNombre(e.target.value)} 
-            required 
-            placeholder="Ej. AAPL, GOOGL" 
+          <input
+            type="text"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            required
+            placeholder="Ej. AAPL, GOOGL"
             className={styles.input}
           />
         </div>
-        
+
         {/* Definimos grid directamente en el JSX */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={styles.label}>Número de Acciones</label>
-            <input 
-              type="number" 
-              value={numeroAcciones} 
-              onChange={(e) => setNumeroAcciones(e.target.value)} 
-              required 
+            <input
+              type="number"
+              value={numeroAcciones}
+              onChange={(e) => setNumeroAcciones(e.target.value)}
+              required
               min="1"
-              placeholder="Cantidad" 
+              placeholder="Cantidad"
               className={styles.input}
             />
           </div>
-          
+
           <div>
             <label className={styles.label}>Valor Inicial</label>
-            <input 
-              type="number" 
-              value={valor} 
-              onChange={(e) => setValor(e.target.value)} 
-              required 
-              step="0.01" 
+            <input
+              type="number"
+              value={valor}
+              onChange={(e) => setValor(e.target.value)}
+              required
+              step="0.01"
               min="0"
-              placeholder="Precio" 
+              placeholder="Precio"
               className={styles.input}
             />
           </div>
         </div>
-        
+
+   
+
         <div>
           <label className={styles.label}>Fecha de Compra</label>
-          <input 
-            type="date" 
-            value={fecha} 
-            onChange={(e) => setFecha(e.target.value)} 
-            required 
+          <input
+            type="date"
+            value={fecha}
+            onChange={(e) => setFecha(e.target.value)}
+            required
             className={styles.input}
           />
         </div>
-        
-        <button 
-          type="submit" 
+
+        <button
+          type="submit"
           className={styles.button}
         >
           <Save className="mr-2" /> Registrar Inversión
