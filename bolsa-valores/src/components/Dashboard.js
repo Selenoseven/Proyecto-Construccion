@@ -7,6 +7,7 @@ import ConsolidationTable2 from './ConsolidationTable2'; // Importar el nuevo co
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { obtenerHistoricoAccion, obtenerAcciones } from '../api';
 import styles from '../Styles/Dashboard.module.css';
+import generatePortfolioReport from './generatePortfolioReport'; // Importar correctamente la función
 
 const Dashboard = () => {
   const [accionesActualizadas, setAccionesActualizadas] = useState(false);
@@ -46,12 +47,28 @@ const Dashboard = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    // Generar datos para ambas tablas
+    const transacciones = acciones.map((accion) => ({
+      fechaCompra: 'Fecha simulada', // Ajusta según tu estructura de datos
+      nombre: accion.nombre,
+      precioCompra: accion.valor,
+      cantidadComprada: accion.numeroAcciones,
+      usdCompra: (accion.valor || 0) * (accion.numeroAcciones || 0),
+    }));
+
+    generatePortfolioReport(acciones, transacciones);
+  };
+
   const renderHeader = () => (
     <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
       <h1 className={styles.title}>Panel de Inversiones</h1>
       <div className="flex space-x-4">
         <button onClick={actualizarAcciones} className={styles.button}>
           <RefreshCw className="mr-2" size={18} /> Actualizar Cartera
+        </button>
+        <button onClick={handleExportPDF} className={`${styles.button} bg-green-500 hover:bg-green-600`}>
+          Exportar PDF
         </button>
       </div>
     </div>
