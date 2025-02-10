@@ -15,6 +15,28 @@ export const registrarAccion = async (datos) => {
     throw error;
   }
 };
+// Obtener precio actual de una acción desde Twelve Data
+export const obtenerPrecioActual = async (simbolo) => {
+  try {
+    const response = await axios.get('https://api.twelvedata.com/quote', {
+      params: {
+        symbol: simbolo,
+        apikey: API_KEY,
+      },
+    });
+
+    const { close } = response.data; // Precio actual
+    if (!close) {
+      throw new Error('Precio actual no disponible');
+    }
+
+    return parseFloat(close);
+  } catch (error) {
+    console.error('Error al obtener el precio actual desde Twelve Data:', error.message);
+    throw error;
+  }
+};
+
 
 // Obtener todas las acciones registradas
 export const obtenerAcciones = async () => {
