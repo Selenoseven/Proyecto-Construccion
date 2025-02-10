@@ -1,0 +1,31 @@
+/* Contenedor principal */
+.container {
+    @apply bg-white p-8 rounded-xl shadow-lg border border-gray-100;
+    width: 500px;
+  }
+  
+  /* Título */
+  .title {
+    @apply text-2xl font-semibold mb-6 text-gray-800;
+  }
+  
+  /* Alerta de error */
+  .error {
+    @apply bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-4 flex items-center;
+  }
+  
+  /* Input */
+  .input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition;
+  }
+  
+  /* Botón */
+  .button {
+    @apply w-full flex justify-center items-center bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 shadow-md;
+  }
+  
+  /* Etiqueta */
+  .label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+  
